@@ -5,22 +5,63 @@ import { assets } from '../assets/assets';
 
 const Appointment = () => {
   const { docId } = useParams();
-  const { doctors , currencySymbol} = useContext(AppContext);
+  const { doctors, currencySymbol } = useContext(AppContext);
+  const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const [docInfo, setDocInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [docSlots, setDocSlots] = useState([]);
+  const [slotIndex, setSlotIndex] = useState(0); // Initialize slot index
 
   const fetchDocInfo = async () => {
     if (doctors && doctors.length > 0) {
       const foundDoctor = doctors.find(doc => doc._id === docId);
-      
       setDocInfo(foundDoctor);
     }
     setLoading(false);
   };
 
+  const getAvailableSlots = async () => {
+    setDocSlots([]);
+
+    let today = new Date();
+    for (let i = 0; i < 7; i++) {
+      let currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + i);
+      
+      let endTime = new Date();
+      endTime.setDate(today.getDate() + i);
+      endTime.setHours(21, 0, 0, 0);
+
+      if (today.getDate() === currentDate.getDate()) {
+        currentDate.setHours(currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10);
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+      } else {
+        currentDate.setHours(10);
+        currentDate.setMinutes(0);
+      }
+
+      let timeSlots = [];
+
+      while (currentDate < endTime) {
+        let formattedTime = currentDate.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
+        timeSlots.push({
+          datetime: new Date(currentDate),
+          time: formattedTime
+        });
+        currentDate.setMinutes(currentDate.getMinutes() + 30);
+      }
+
+      setDocSlots(prev => [...prev, timeSlots]);
+    }
+  };
+
   useEffect(() => {
     fetchDocInfo();
   }, [doctors, docId]);
+
+  useEffect(() => {
+    getAvailableSlots();
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -68,9 +109,35 @@ const Appointment = () => {
           </div>
 
           <p className="text-gray-500 font-medium mt-4">
-            Appointment Fee: <span className='text-gray-600'>{currencySymbol}{docInfo.fees}</span>
+            Appointment Fee: <span className="text-gray-600">{currencySymbol}{docInfo.fees}</span>
           </p>
         </div>
+      </div>
+
+      {/* Booking slots */}
+      <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
+        <p>Booking slots</p>
+        <div>
+          {docSlots.length > 0 && docSlots.map((item, index) => (
+            <div key={index} onClick={() => setSlotIndex(index)} className="cursor-pointer">
+              <p>{daysOfWeek[item[0]?.datetime.getDay()]}</p>
+              <p>{item[0]?.datetime.getDate()}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* Time slots for the selected day */}
+        <div>
+          {docSlots.length > 0 && docSlots[slotIndex].map((item, index) => (
+            <p key={index}>{item.time.toLowerCase()}</p>
+          ))}
+        </div>
+      </div>
+
+      {/* Related doctors */}
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold text-gray-900">Related Doctors</h3>
+        {/* Render related doctors here */}
       </div>
     </div>
   );
