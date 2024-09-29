@@ -44,6 +44,7 @@ const About = () => {
 
       
     </div>
+    
   );
 };
 
