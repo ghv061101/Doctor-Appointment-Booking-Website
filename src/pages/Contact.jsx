@@ -22,7 +22,7 @@ const Contact = () => {
         <img 
           src={assets.contact_image} 
           alt="Contact Us" 
-          className="w-full md:max-w-[360px] rounded shadow" 
+          className="w-full md:max-w-[360px] " 
         />
 
         <div className="md:w-1/2">
@@ -36,7 +36,7 @@ const Contact = () => {
               <h3 className='mt-4 text-lg'>Careers at PRESCRIPTO</h3>
               <p>Learn more about our teams and job openings.</p>
               <button 
-                className="mt-2 px- py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
+                className="border border-black py-4 py-4 text-sm hover:bg-black hover:text-white transition-all duration-500"
                 onClick={handleButtonClick}
               >
                 Explore Jobs
