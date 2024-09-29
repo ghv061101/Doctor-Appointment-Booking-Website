@@ -35,4 +35,4 @@ Follow these steps to set up and run the project on your local machine:
 1. Clone the repository:
 
    ```bash
-   [https://github.com/ghv061101/Doctor-Appointment-Booking-Website.git]
+   https://github.com/ghv061101/Doctor-Appointment-Booking-Website.git
