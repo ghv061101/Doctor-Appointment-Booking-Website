@@ -60,7 +60,7 @@ const Footer = () => {
       {/* Footer Bottom Section */}
       <div className="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
         <p>&copy; 2024 DoctorsBooking. All rights reserved.</p>
-        <p>Designed by YourCompany.</p>
+        
       </div>
     </footer>
   );

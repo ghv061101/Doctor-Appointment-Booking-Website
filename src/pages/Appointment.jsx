@@ -10,7 +10,8 @@ const Appointment = () => {
   const [docInfo, setDocInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [docSlots, setDocSlots] = useState([]);
-  const [slotIndex, setSlotIndex] = useState(0); // Initialize slot index
+  const [slotIndex, setSlotIndex] = useState(0);
+  const [slotTime, setSlotTime] = useState(''); // Store selected time slot
 
   const fetchDocInfo = async () => {
     if (doctors && doctors.length > 0) {
@@ -82,7 +83,7 @@ const Appointment = () => {
           />
         </div>
 
-        <div className="flex-1 border border-gray-300 rounded-lg p-6 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0">
+        <div className="flex-1 border border-gray-300 rounded-lg p-6 bg-white mx-2 sm:mx-0 mt-[-80px] sm:mt-0 shadow-lg">
           <p className="flex items-center gap-2 text-2xl font-semibold text-gray-900">
             {docInfo.name}
             <img
@@ -117,19 +118,32 @@ const Appointment = () => {
       {/* Booking slots */}
       <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
         <p>Booking slots</p>
-        <div>
+        <div className='flex gap-3 items-center w-full overflow-x-scroll mt-4'>
           {docSlots.length > 0 && docSlots.map((item, index) => (
-            <div key={index} onClick={() => setSlotIndex(index)} className="cursor-pointer">
-              <p>{daysOfWeek[item[0]?.datetime.getDay()]}</p>
-              <p>{item[0]?.datetime.getDate()}</p>
+            <div 
+              className={`text-center py-6 min-w-16 rounded-lg cursor-pointer ${slotIndex === index ? 'bg-primary text-white' : 'border border-gray-200'}`} 
+              key={index} 
+              onClick={() => {
+                setSlotIndex(index);
+                setSlotTime(''); // Reset selected time when changing the day
+              }}
+            >
+              <p>{item[0] && daysOfWeek[item[0].datetime.getDay()]}</p>
+              <p>{item[0] && item[0].datetime.getDate()}</p>
             </div>
           ))}
         </div>
 
         {/* Time slots for the selected day */}
-        <div>
+        <div className="mt-4">
           {docSlots.length > 0 && docSlots[slotIndex].map((item, index) => (
-            <p key={index}>{item.time.toLowerCase()}</p>
+            <div 
+              key={index} 
+              className={`py-2 px-4 border rounded-lg cursor-pointer ${slotTime === item.time ? 'bg-blue-500 text-white' : 'bg-white text-gray-800'}`}
+              onClick={() => setSlotTime(item.time)} // Update selected time slot
+            >
+              {item.time.toLowerCase()}
+            </div>
           ))}
         </div>
       </div>
